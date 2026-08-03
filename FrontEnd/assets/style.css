@@ -98,6 +98,14 @@ nav li {
 li:hover {
 	color: #B1663C;
 }
+li a {
+	color: black;
+	text-decoration: none;
+}
+.forgot-password,
+.forgot-password a {
+	color: black;
+}
 #introduction {
 	display: flex;
 	align-items: center;
