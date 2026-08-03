@@ -66,6 +66,28 @@ const btnAll = document.createElement("button");
     });
 }
 //=================================================================================
+// Etape 4 : Filtrage des travaux =================================================
+//=================================================================================
+function filterWorks(works, categoryId) {
+    if (categoryId === "all") {
+        displayWorks(works); // Retourner tous les travaux si "Tous" est sélectionné
+    }
+    else { const filteredWorks = works.filter(work => work.categoryId == categoryId);
+        displayWorks(filteredWorks);
+    }
+}
+function addFilterlisteners(works) {
+    const filtercontainer = document.querySelector(".filters-container");
+    filtercontainer.addEventListener("click", (event) => {
+        const clickedButton = event.target.closest("button");
+        if (!clickedButton) return; // Si aucun bouton n'est cliqué, ne rien faire
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+        clickedButton.classList.add("active");
+        const categoryId = clickedButton.dataset.id || "all";
+        filterWorks(works, categoryId);
+    });
+}
+//=================================================================================
 // Initialisation de la page ======================================================
 //=================================================================================
 
@@ -73,7 +95,10 @@ const btnAll = document.createElement("button");
 async function init() {
     const works = await getWorks();
     displayWorks(works);
+    //Charges des boutons des categories 
     await getCategories();
+    // Ajout des écouteurs d'événements pour le filtrage
+    addFilterlisteners(works);
 }
 // initialisation de la page au chargement
 init();
