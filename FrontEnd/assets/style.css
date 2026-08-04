@@ -342,3 +342,210 @@ footer nav ul {
 .btn-add-photo:hover {
 	opacity: 0.9;
 }
+/* --- CORRECTION LARGEUR MODALE ET FORMULAIRE --- */
+
+.modal-wrapper {
+    background-color: #fff;
+    width: 630px;
+    height: 688px;
+    border-radius: 10px;
+    padding: 60px 0;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Force les vues à occuper 100% de la largeur du wrapper */
+.modal-view {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Vue 1 : Galerie --- */
+.modal-view:nth-of-type(1) {
+    padding: 0 100px;
+}
+
+.modal-gallery {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 45px;
+    width: 100%;
+}
+
+.modal-gallery figure {
+    position: relative;
+    margin: 0;
+}
+
+.modal-gallery img {
+    width: 100%;
+    height: 102px;
+    object-fit: cover;
+}
+
+.modal-gallery .fa-trash-can {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: #000;
+    color: #fff;
+    padding: 6px;
+    border-radius: 2px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.modal-view:nth-of-type(1) > hr {
+    border: none;
+    border-top: 1px solid #B3B3B3;
+    width: 100%;
+    margin: 0 0 30px 0;
+}
+
+.btn-add-photo {
+    background-color: #1D6154;
+    color: white;
+    border: none;
+    border-radius: 60px;
+    width: 179px;
+    height: 36px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    align-self: center;
+}
+
+/* --- Vue 2 : Formulaire d'ajout --- */
+.modal-view:nth-of-type(2) {
+    padding: 0 105px;
+}
+
+.modal-header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 20;
+    width: 100%;
+}
+
+.js-modalback, .js-modal-back {
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+#add-photo-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-photo-container {
+    background-color: #E8F1F4;
+    height: 169px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-photo-container .fa-image {
+    font-size: 58px;
+    color: #B9C5CC;
+    margin-bottom: 10px;
+}
+
+.label-file {
+    background-color: #CBD6DC;
+    color: #306685;
+    padding: 10px 30px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 7px;
+    z-index: 5;
+}
+
+.label-file:hover {
+    background-color: #b9c5cc;
+}
+
+.add-photo-container p {
+    font-size: 10px;
+    color: #444444;
+    margin: 0;
+}
+
+.add-photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+}
+
+#add-photo-form label:not(.label-file) {
+    font-size: 14px;
+    font-weight: 500;
+    color: #3D3D3D;
+    margin-bottom: 10px;
+}
+
+#add-photo-form input[type="text"],
+#add-photo-form select {
+    height: 51px;
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    border-radius: 0px;
+    padding: 0 15px;
+    font-size: 14px;
+    font-family: 'Work Sans', sans-serif;
+    margin-bottom: 20px;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#add-photo-form hr {
+    border: none;
+    border-top: 1px solid #B3B3B3;
+    width: 100%;
+    margin: 5px 0 25px 0;
+}
+
+#submit-btn {
+    background-color: #A7A7A7;
+    color: white;
+    border: none;
+    border-radius: 60px;
+    width: 179px;
+    height: 36px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    align-self: center;
+}
+
+#submit-btn:not([disabled]) {
+    cursor: pointer;
+    background-color: #1D6154;
+}
