@@ -52,11 +52,11 @@ async function getCategories() {
 function displayCategories(categories) {
     const filtersContainer = document.querySelector(".filters-container");
     filtersContainer.innerHTML = ""; // Vider le conteneur avant d'ajouter les nouveaux filtres
-const btnAll = document.createElement("button");
+    const btnAll = document.createElement("button");
     btnAll.textContent = "Tous";
     btnAll.classList.add("filter-btn");
     filtersContainer.appendChild(btnAll);
-// Création des boutons des catégories de l'API
+    // Création des boutons des catégories de l'API
     categories.forEach(category => {
         const btn = document.createElement("button");
         btn.textContent = category.name;
@@ -72,7 +72,8 @@ function filterWorks(works, categoryId) {
     if (categoryId === "all") {
         displayWorks(works); // Retourner tous les travaux si "Tous" est sélectionné
     }
-    else { const filteredWorks = works.filter(work => work.categoryId == categoryId);
+    else {
+        const filteredWorks = works.filter(work => work.categoryId == categoryId);
         displayWorks(filteredWorks);
     }
 }
@@ -81,7 +82,7 @@ function addFilterlisteners(works) {
     filtercontainer.addEventListener("click", (event) => {
         const clickedButton = event.target.closest("button");
         if (!clickedButton) return; // Si aucun bouton n'est cliqué, ne rien faire
-    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
         clickedButton.classList.add("active");
         const categoryId = clickedButton.dataset.id || "all";
         filterWorks(works, categoryId);
@@ -91,36 +92,36 @@ function addFilterlisteners(works) {
 // Etape 5 : formulaire de connexion ==============================================
 //=================================================================================
 const loginForm = document.querySelector("#login-form");
-    if (loginForm) {
-        loginForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const email = document.querySelector("#email").value;
-            const password = document.querySelector("#password").value;
-            const userCredentials = { 
-                email: email, 
-                password: password 
-            };
-            try {
-                const response = await fetch("http://localhost:5678/api/users/login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(userCredentials)
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log("réponse de l'API:", data);
-                    localStorage.setItem("token", data.token);
-                    window.location.href = "index.html"; // Redirection vers la page d'accueil après connexion réussie
-                } else {
-                    alert("Erreur lors de la connexion. Veuillez vérifier vos identifiants.");
-                }
-            } catch (error) {
-                console.error("Erreur :", error);
+if (loginForm) {
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.querySelector("#email").value;
+        const password = document.querySelector("#password").value;
+        const userCredentials = {
+            email: email,
+            password: password
+        };
+        try {
+            const response = await fetch("http://localhost:5678/api/users/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(userCredentials)
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log("réponse de l'API:", data);
+                localStorage.setItem("token", data.token);
+                window.location.href = "index.html"; // Redirection vers la page d'accueil après connexion réussie
+            } else {
+                alert("Erreur lors de la connexion. Veuillez vérifier vos identifiants.");
             }
-        });
-    }
+        } catch (error) {
+            console.error("Erreur :", error);
+        }
+    });
+}
 //=================================================================================
 // Etape 5.3 : Page d'accueil connectée ===========================================
 //=================================================================================
@@ -133,14 +134,14 @@ function checkUserLogin() {
         if (loginLink) {
             loginLink.textContent = "Logout";
             loginLink.href = "#";
-        // Déconnexion au clic sur le lien "Logout"
+            // Déconnexion au clic sur le lien "Logout"
             loginLink.addEventListener("click", (event) => {
                 event.preventDefault();
                 localStorage.removeItem("token");
                 // Supp le bouton modifier
                 window.location.reload(); // Recharger la page pour mettre à jour l'affichage
-            });  
-        } 
+            });
+        }
         if (filtersContainer) {
             filtersContainer.style.display = "none"; // Masquer les boutons de filtrage
         }
@@ -206,7 +207,7 @@ async function displayModalGallery() {
 
         works.forEach(work => {
             const figure = document.createElement("figure");
-            
+
             const img = document.createElement("img");
             img.src = work.imageUrl;
             img.alt = work.title;
@@ -215,14 +216,14 @@ async function displayModalGallery() {
             trashIcon.classList.add("fa-solid", "fa-trash-can");
             // Id poubelle
             trashIcon.dataset.id = work.id;
-// --- Supp projet au click poubelle ---
+            // --- Supp projet au click poubelle ---
             trashIcon.addEventListener("click", async () => {
                 const workId = trashIcon.dataset.id;
                 const token = localStorage.getItem("token");
 
                 try {
                     const deleteResponse = await fetch("http://localhost:5678/api/works/" + workId, {
-                        method: "DELETE", 
+                        method: "DELETE",
                         headers: {
                             "Authorization": "Bearer " + token
                         }
@@ -230,11 +231,11 @@ async function displayModalGallery() {
                     if (deleteResponse.ok) {
                         //Rafraichis la modale et la page pour suppresion
                         displayModalGallery();
-                        const works = await getWorks ();
+                        const works = await getWorks();
                         displayWorks(works);
                         displayModalGallery();
                     } else {
-                        console.error ("Erreur lors de la suppresion du projet");
+                        console.error("Erreur lors de la suppresion du projet");
                     }
                 } catch (error) {
                     console.error("Erreur réseau", error);
@@ -274,9 +275,9 @@ async function displayCategoryOptions() {
     try {
         const response = await fetch("http://localhost:5678/api/categories");
         const categories = await response.json();
-        
+
         const selectCategory = document.getElementById("category");
-        
+
         // Option vide par défaut (pour respecter la maquette)
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
@@ -311,15 +312,15 @@ fileInput.addEventListener("change", (e) => {
     uploadedFile = e.target.files[0];
     if (uploadedFile) {
         addPhotoContainer.innerHTML = "";
-        
+
         const previewImage = document.createElement("img");
         previewImage.src = URL.createObjectURL(uploadedFile);
         previewImage.style.maxHeight = "100%";
         previewImage.style.maxWidth = "100%";
         previewImage.style.objectFit = "contain";
-        
+
         addPhotoContainer.appendChild(previewImage);
-        
+
         checkFormValidity();
     }
 });
@@ -344,15 +345,15 @@ const addPhotoForm = document.getElementById("add-photo-form");
 
 addPhotoForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     const token = localStorage.getItem("token");
-    
+
     // Création d'un objet FormData pour envoyer un fichier et des données texte
     const formData = new FormData();
     formData.append("image", uploadedFile);
     formData.append("title", titleInput.value);
     formData.append("category", categorySelect.value);
-    
+
     try {
         const response = await fetch("http://localhost:5678/api/works", {
             method: "POST",
@@ -362,19 +363,19 @@ addPhotoForm.addEventListener("submit", async (e) => {
             },
             body: formData
         });
-        
+
         if (response.ok) {
             const newWork = await response.json();
-            
+
             // 1. Rafraîchir les galeries (sur la page principale et dans la modale)
             const works = await getWorks();
             displayWorks(works);
             displayModalGallery();
-            
+
             // 2. Réinitialiser et vider le formulaire
             addPhotoForm.reset();
             uploadedFile = null;
-            
+
             // Restaurer l'affichage initial du conteneur d'image
             addPhotoContainer.innerHTML = `
                 <i class="fa-regular fa-image"></i>
@@ -382,19 +383,19 @@ addPhotoForm.addEventListener("submit", async (e) => {
                 <input type="file" id="file-upload" name="image" accept="image/png, image/jpeg" style="display: none;">
                 <p>jpg, png : 4mo max</p>
             `;
-            
+
             // Ré-écouter le nouvel input file qui vient d'être recréé dynamiquement dans le HTML
             rebindFileInput();
-            
+
             // Désactiver à nouveau le bouton de validation
             submitBtn.setAttribute("disabled", "true");
             submitBtn.style.backgroundColor = "";
-            
+
             // 3. Fermer la modale ou revenir à la galerie (ici on ferme ou on revient à la galerie, au choix)
             modalViewForm.style.display = "none";
             modalViewGallery.style.display = "block";
             modal.style.display = "none";
-            
+
         } else {
             console.error("Erreur lors de l'ajout du projet");
         }
