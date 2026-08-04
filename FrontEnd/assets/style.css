@@ -75,14 +75,13 @@ h1 > span {
 	font-family: 'Work Sans';
 	font-size:10px;
 	letter-spacing: 0.1em;
-;
 }
 
 h2{
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
-	color: #1D6154
+	color: #1D6154;
 }
 nav ul {
 	display: flex;
@@ -123,15 +122,18 @@ li a {
 	flex: 1
 }
 #introduction h2 {
-	margin-bottom: 1em;
+	margin-bottom: 3em;
 }
 
 #introduction p {
-	margin-bottom: 0.5em;
+	margin-bottom: 1em;
 }
 #portfolio h2 {
+	position: relative;
 	text-align: center;
-	margin-bottom: 1em;
+	margin-bottom: 3em;
+	margin-top: 4em;
+
 }
 .gallery {
 	width: 100%;
@@ -217,4 +219,31 @@ footer nav ul {
 .filter-btn.active {
 	background-color: #1D6154;
 	color: #FFFEF8;
+}
+.edit-banner {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	height: 59px;
+	background-color: #000000;
+	color: #FFFFFF;
+	font-size: 16px;
+	font-family: 'work Sans', sans-serif;
+}
+.btn-modal-open {
+	position: absolute;
+	background: transparent;
+	border: none;
+	font-family: 'work Sans', sans-serif;
+	font-size: 14px;
+	cursor: pointer;
+	margin-left: 30px;
+	color: #000000;
+	top: 68%;
+	transform: translateY(-50%);
+}
+.btn-modal-open i {
+	margin-left : 5px;
 }
