@@ -162,7 +162,66 @@ function checkUserLogin() {
         }
     }
 }
+//=================================================================================
+// Etape 6 : Ajout et gestion de la Modale ========================================
+//=================================================================================
+const modal = document.getElementById("modal");
+const closeModalBtn = document.querySelector(".js-modal-close");
+// 1. Fonction pour ouvrir la modale
+function openModal(e) {
+    e.preventDefault();
+    modal.style.display = "flex";
+}
+// 2. Fonction pour fermer la modale
+function closeModal() {
+    modal.style.display = "none";
+}
+//Ouverture au clic sur modifier avec element dynamique
+document.addEventListener("click", (e) => {
+    const editBtn = e.target.closest(".btn-modal-open");
+    if (editBtn) {
+        openModal(e);
+    }
+})
+// Événement de fermeture au clic sur la croix
+if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", closeModal);
+}
+// Fermeture au clic sur le fond gris en dehors de la boîte blanche
+window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+// --- AFFICHAGE DES PROJETS DANS LA MODALE ---
+async function displayModalGallery() {
+    const modalGallery = document.querySelector(".modal-gallery");
+    if (!modalGallery) return;
+    // Vide la galerie pour éviter les doublons
+    modalGallery.innerHTML = "";
+    try {
+        const response = await fetch("http://localhost:5678/api/works");
+        const works = await response.json();
 
+        works.forEach(work => {
+            const figure = document.createElement("figure");
+            
+            const img = document.createElement("img");
+            img.src = work.imageUrl;
+            img.alt = work.title;
+
+            const trashIcon = document.createElement("i");
+            trashIcon.classList.add("fa-solid", "fa-trash-can");
+            // Tu pourras ajouter l'écouteur de suppression ici plus tard
+
+            figure.appendChild(img);
+            figure.appendChild(trashIcon);
+            modalGallery.appendChild(figure);
+        });
+    } catch (error) {
+        console.error("Erreur lors du chargement des projets de la modale", error);
+    }
+}
 //=================================================================================
 // Initialisation de la page ======================================================
 //=================================================================================
@@ -177,6 +236,8 @@ async function init() {
     addFilterlisteners(works);
     // Connexion de l'utilisateur et affichage du mode édition si connecté
     checkUserLogin();
+    //Ouverture de la Modale
+    displayModalGallery();
 }
 // initialisation de la page au chargement
 init();
