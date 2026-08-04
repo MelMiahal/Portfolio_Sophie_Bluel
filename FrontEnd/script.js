@@ -230,7 +230,9 @@ async function displayModalGallery() {
                     if (deleteResponse.ok) {
                         //Rafraichis la modale et la page pour suppresion
                         displayModalGallery();
-                        getWorks(); //Supp ou adapte
+                        const works = await getWorks ();
+                        displayWorks(works);
+                        displayModalGallery();
                     } else {
                         console.error ("Erreur lors de la suppresion du projet");
                     }
