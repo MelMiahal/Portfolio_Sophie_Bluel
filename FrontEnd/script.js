@@ -121,6 +121,49 @@ const loginForm = document.querySelector("#login-form");
         });
     }
 //=================================================================================
+// Etape 5.3 : Page d'accueil connectée ===========================================
+//=================================================================================
+function checkUserLogin() {
+    const token = localStorage.getItem("token");
+    const loginLink = document.querySelector("header nav ul li a[href='login.html']");
+    const filtersContainer = document.querySelector(".filters-container");
+    if (token) {
+        // Lien "Login" remplacé par "Logout"
+        if (loginLink) {
+            loginLink.textContent = "Logout";
+            loginLink.href = "#";
+        // Déconnexion au clic sur le lien "Logout"
+            loginLink.addEventListener("click", (event) => {
+                event.preventDefault();
+                localStorage.removeItem("token");
+                // Supp le bouton modifier
+                window.location.reload(); // Recharger la page pour mettre à jour l'affichage
+            });  
+        } 
+        if (filtersContainer) {
+            filtersContainer.style.display = "none"; // Masquer les boutons de filtrage
+        }
+        const editBanner = document.createElement("aside");
+        editBanner.classList.add("edit-banner");
+        editBanner.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> Mode édition`;
+        document.body.insertBefore(editBanner, document.body.firstChild);
+    }
+    const portfolioTitle = document.querySelector("#portfolio h2");
+    if (portfolioTitle) {
+        const token = localStorage.getItem("token");
+        const exixtingBtn = portfolioTitle.querySelector(".btn-modal-open");
+        if (token && !exixtingBtn) {
+            const editBtn = document.createElement("button");
+            editBtn.classList.add("btn-modal-open");
+            editBtn.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> Modifier`;
+            portfolioTitle.appendChild(editBtn);
+        } else if (!token && exixtingBtn) {
+            exixtingBtn.remove();
+        }
+    }
+}
+
+//=================================================================================
 // Initialisation de la page ======================================================
 //=================================================================================
 
@@ -132,6 +175,8 @@ async function init() {
     await getCategories();
     // Ajout des écouteurs d'événements pour le filtrage
     addFilterlisteners(works);
+    // Connexion de l'utilisateur et affichage du mode édition si connecté
+    checkUserLogin();
 }
 // initialisation de la page au chargement
 init();
