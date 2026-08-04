@@ -108,8 +108,9 @@ const loginForm = document.querySelector("#login-form");
                     },
                     body: JSON.stringify(userCredentials)
                 });
-                if (!response.ok) {
+                if (response.ok) {
                     const data = await response.json();
+                    console.log("réponse de l'API:", data);
                     localStorage.setItem("token", data.token);
                     window.location.href = "index.html"; // Redirection vers la page d'accueil après connexion réussie
                 } else {
@@ -212,8 +213,31 @@ async function displayModalGallery() {
 
             const trashIcon = document.createElement("i");
             trashIcon.classList.add("fa-solid", "fa-trash-can");
-            // Tu pourras ajouter l'écouteur de suppression ici plus tard
+            // Id poubelle
+            trashIcon.dataset.id = work.id;
+            //Supp projet au click poubelle
+            trashIcon.addEventListener("click", async () => {
+                const workId = trashIcon.dataset.id;
+                const token = localStorage.getItem("token");
 
+                try {
+                    const deleteResponse = await fetch("http://localhost:5678/api/works/" + workId, {
+                        method: "DELETE", 
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    });
+                    if (deleteResponse.ok) {
+                        //Rafraichis la modale et la page pour suppresion
+                        displayModalGallery();
+                        getWorks(); //Supp ou adapte
+                    } else {
+                        console.error ("Erreur lors de la suppresion du projet");
+                    }
+                } catch (error) {
+                    console.error("Erreur réseau", error);
+                }
+            });
             figure.appendChild(img);
             figure.appendChild(trashIcon);
             modalGallery.appendChild(figure);
@@ -240,4 +264,6 @@ async function init() {
     displayModalGallery();
 }
 // initialisation de la page au chargement
-init();
+if (document.querySelector(".gallery")) {
+    init();
+}
