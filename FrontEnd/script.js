@@ -215,7 +215,7 @@ async function displayModalGallery() {
             trashIcon.classList.add("fa-solid", "fa-trash-can");
             // Id poubelle
             trashIcon.dataset.id = work.id;
-            //Supp projet au click poubelle
+// --- Supp projet au click poubelle ---
             trashIcon.addEventListener("click", async () => {
                 const workId = trashIcon.dataset.id;
                 const token = localStorage.getItem("token");
@@ -248,6 +248,178 @@ async function displayModalGallery() {
         console.error("Erreur lors du chargement des projets de la modale", error);
     }
 }
+// --- Formulaire d'ajout d'image et vu Modale ---
+const modalViewGallery = document.querySelector(".modal-view:nth-of-type(1)");
+const modalViewForm = document.querySelector(".modal-view:nth-of-type(2)");
+const btnOpenAddForm = document.querySelector(".btn-add-photo");
+const btnBackToGallery = document.querySelector(".js-modalback");
+
+// 1. Passer de la galerie au formulaire d'ajout
+if (btnOpenAddForm) {
+    btnOpenAddForm.addEventListener("click", () => {
+        modalViewGallery.style.display = "none";
+        modalViewForm.style.display = "block";
+    });
+}
+
+// 2. Revenir du formulaire à la galerie grâce à la flèche de retour
+if (btnBackToGallery) {
+    btnBackToGallery.addEventListener("click", () => {
+        modalViewForm.style.display = "none";
+        modalViewGallery.style.display = "block";
+    });
+}
+//3. Ajout catégorie dans le selecteur Modale
+async function displayCategoryOptions() {
+    try {
+        const response = await fetch("http://localhost:5678/api/categories");
+        const categories = await response.json();
+        
+        const selectCategory = document.getElementById("category");
+        
+        // Option vide par défaut (pour respecter la maquette)
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.text = "";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        selectCategory.appendChild(defaultOption);
+
+        // Ajout des catégories de l'API
+        categories.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category.id;
+            option.text = category.name;
+            selectCategory.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Erreur lors du chargement des catégories pour le formulaire", error);
+    }
+}
+// --- GESTION DE L'APERÇU DE L'IMAGE ET DU FORMULAIRE D'AJOUT ---
+
+const fileInput = document.getElementById("file-upload");
+const addPhotoContainer = document.querySelector(".add-photo-container");
+const titleInput = document.getElementById("title");
+const categorySelect = document.getElementById("category");
+const submitBtn = document.getElementById("submit-btn");
+
+let uploadedFile = null;
+
+// 1. Afficher l'aperçu de l'image choisie
+fileInput.addEventListener("change", (e) => {
+    uploadedFile = e.target.files[0];
+    if (uploadedFile) {
+        addPhotoContainer.innerHTML = "";
+        
+        const previewImage = document.createElement("img");
+        previewImage.src = URL.createObjectURL(uploadedFile);
+        previewImage.style.maxHeight = "100%";
+        previewImage.style.maxWidth = "100%";
+        previewImage.style.objectFit = "contain";
+        
+        addPhotoContainer.appendChild(previewImage);
+        
+        checkFormValidity();
+    }
+});
+
+// 2. Vérifier si tous les champs sont remplis pour activer le bouton Valider
+function checkFormValidity() {
+    if (uploadedFile && titleInput.value.trim() !== "" && categorySelect.value !== "") {
+        submitBtn.removeAttribute("disabled");
+        submitBtn.style.backgroundColor = "#1D6154"; // Couleur verte de validation
+    } else {
+        submitBtn.setAttribute("disabled", "true");
+        submitBtn.style.backgroundColor = ""; // Réinitialise le style
+    }
+}
+
+titleInput.addEventListener("input", checkFormValidity);
+categorySelect.addEventListener("change", checkFormValidity);
+
+// --- ENVOI DU NOUVEAU PROJET VIA L'API (POST) ---
+
+const addPhotoForm = document.getElementById("add-photo-form");
+
+addPhotoForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const token = localStorage.getItem("token");
+    
+    // Création d'un objet FormData pour envoyer un fichier et des données texte
+    const formData = new FormData();
+    formData.append("image", uploadedFile);
+    formData.append("title", titleInput.value);
+    formData.append("category", categorySelect.value);
+    
+    try {
+        const response = await fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+                // Note : Pas de Content-Type "application/json" avec FormData, le navigateur gère le multipart/form-data tout seul
+            },
+            body: formData
+        });
+        
+        if (response.ok) {
+            const newWork = await response.json();
+            
+            // 1. Rafraîchir les galeries (sur la page principale et dans la modale)
+            const works = await getWorks();
+            displayWorks(works);
+            displayModalGallery();
+            
+            // 2. Réinitialiser et vider le formulaire
+            addPhotoForm.reset();
+            uploadedFile = null;
+            
+            // Restaurer l'affichage initial du conteneur d'image
+            addPhotoContainer.innerHTML = `
+                <i class="fa-regular fa-image"></i>
+                <label for="file-upload" class="label-file">+ Ajouter photo</label>
+                <input type="file" id="file-upload" name="image" accept="image/png, image/jpeg" style="display: none;">
+                <p>jpg, png : 4mo max</p>
+            `;
+            
+            // Ré-écouter le nouvel input file qui vient d'être recréé dynamiquement dans le HTML
+            rebindFileInput();
+            
+            // Désactiver à nouveau le bouton de validation
+            submitBtn.setAttribute("disabled", "true");
+            submitBtn.style.backgroundColor = "";
+            
+            // 3. Fermer la modale ou revenir à la galerie (ici on ferme ou on revient à la galerie, au choix)
+            modalViewForm.style.display = "none";
+            modalViewGallery.style.display = "block";
+            modal.style.display = "none";
+            
+        } else {
+            console.error("Erreur lors de l'ajout du projet");
+        }
+    } catch (error) {
+        console.error("Erreur réseau", error);
+    }
+});
+
+// Petite fonction pour ré-attacher l'événement sur l'input file recréé dynamiquement
+function rebindFileInput() {
+    const newFileInput = document.getElementById("file-upload");
+    newFileInput.addEventListener("change", (e) => {
+        uploadedFile = e.target.files[0];
+        if (uploadedFile) {
+            addPhotoContainer.innerHTML = "";
+            const previewImage = document.createElement("img");
+            previewImage.src = URL.createObjectURL(uploadedFile);
+            previewImage.style.maxHeight = "100%";
+            previewImage.style.maxWidth = "100%";
+            previewImage.style.objectFit = "contain";
+            addPhotoContainer.appendChild(previewImage);
+            checkFormValidity();
+        }
+    });
+}
 //=================================================================================
 // Initialisation de la page ======================================================
 //=================================================================================
@@ -264,6 +436,9 @@ async function init() {
     checkUserLogin();
     //Ouverture de la Modale
     displayModalGallery();
+    // Appel de la fonction pour charger les catégories au démarrage
+    displayCategoryOptions();
+
 }
 // initialisation de la page au chargement
 if (document.querySelector(".gallery")) {
