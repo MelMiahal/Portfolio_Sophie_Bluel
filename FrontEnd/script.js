@@ -395,9 +395,9 @@ addPhotoForm.addEventListener("submit", async (e) => {
             submitBtn.style.backgroundColor = "";
 
             // 3. Fermer la modale ou revenir à la galerie (ici on ferme ou on revient à la galerie, au choix)
-            modalViewForm.style.display = "none";
-            modalViewGallery.style.display = "block";
-            modal.style.display = "none";
+            //modalViewForm.style.display = "none";
+            //modalViewGallery.style.display = "block";
+            //modal.style.display = "none";
 
         } else {
             console.error("Erreur lors de l'ajout du projet");
