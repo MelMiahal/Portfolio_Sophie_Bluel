@@ -304,6 +304,8 @@ const addPhotoContainer = document.querySelector(".add-photo-container");
 const titleInput = document.getElementById("title");
 const categorySelect = document.getElementById("category");
 const submitBtn = document.getElementById("submit-btn");
+const errorMessage = document.getElementById ("error-message");
+
 
 let uploadedFile = null;
 
@@ -330,12 +332,13 @@ function checkFormValidity() {
     if (uploadedFile && titleInput.value.trim() !== "" && categorySelect.value !== "") {
         submitBtn.removeAttribute("disabled");
         submitBtn.style.backgroundColor = "#1D6154"; // Couleur verte de validation
+        errorMessage.textContent = "";
     } else {
         submitBtn.setAttribute("disabled", "true");
         submitBtn.style.backgroundColor = ""; // Réinitialise le style
+        errorMessage.textContent = "Veuillez remplir tous les champs.";
     }
 }
-
 titleInput.addEventListener("input", checkFormValidity);
 categorySelect.addEventListener("change", checkFormValidity);
 
